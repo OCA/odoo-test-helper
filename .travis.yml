@@ -1,0 +1,88 @@
+dist: xenial
+language: python
+
+cache: pip
+
+addons:
+  postgresql: "9.6"
+
+stages:
+  - name: linting
+  - name: test
+  - name: deploy
+    if: tag IS present
+
+env:
+  global:
+    - ODOO_REPO="odoo/odoo" INSTALL_ODOO="1" WKHTMLTOPDF_VERSION="0.12.5" LINT_CHECK="0"
+
+jobs:
+  include:
+    - stage: linting
+      python: 3.6
+      script: pre-commit run --all-files
+      env: INSTALL_ODOO="0"
+    - stage: linting
+      python: 3.6
+      script:
+        - pip wheel -w /tmp/build --no-deps .
+        - twine check /tmp/build/*
+      env: INSTALL_ODOO="0"
+    - stage: test
+      python: 2.7
+      env: VERSION="10.0"
+    - stage: test
+      python: 3.5
+      env: VERSION="11.0"
+    - stage: test
+      python: 3.5
+      env: VERSION="12.0"
+    - stage: test
+      python: 3.6
+      env: VERSION="12.0"
+    - stage: test
+      python: 3.7
+      env: VERSION="12.0"
+    - stage: test
+      python: 3.6
+      env: VERSION="13.0"
+    - stage: test
+      python: 3.8-dev
+      env: VERSION="12.0"
+    - stage: test
+      python: 3.7
+      env: VERSION="master"
+    - stage: deploy
+      script: echo "Deploy to PyPi"
+      env: INSTALL_ODOO="0"
+      deploy:
+        provider: pypi
+        user: __token__
+        password:
+          secure: IP4azMtiBnhxyz6q+AbNc6F4c0m5FaRdWTEKRn7SMp6TB1pgeSQKPg/2iXoMn+1hyMxT1iu1p3xI5vFK2KgOA02sx1GwtfRUKNR/rqvXKGjwCu/9itaXAPazsKBSpPTCvd6EgYrN4/8Zgen2CV70RhVVyv685SefHuS6xppeBvmQvCdQodpJzBlSTfk36MZaDWxHBr9X/F65jdCPYACkbLQlqjDcmZZdTzn/OntrWZhFb4uONVekX8yAWSrtaa1xDMbHb+ScaeT+xps671HL4c7I5bkERGd57PLC4ylbTdldC4mieslj9jClYnGSxI31sNPLVK3mPAj34ngWdmg2n0WwimScc+5oTDWO3vbb0ospgw3HkxPtORLqcN5kRElMA8kgStefQknwxh/QJ0ociWLvYXrvMyMwMkWPxrzHmKy3j6/ZGHnT0s+1xJrNoazKcaWY2MWEVHVhuQNlcJ3Ca8Tylfj1H2eoiskGkMLSX/SElGRbDz4h1EyXDLuujPhd8UU/G0DcErkEnQOlekuU9gAVrJxtaTMucAMGX430jbieiZBXTBI3XTkPK3D65uXAMqqCrQCivy4PGjiSXvhUxdnYVtuph9Yf8XCpyQa7y1dkJr5PxOgPHZGbK6hTEBV8mWbUnUXOQUc1ZJZl3t/D+vVltvxGrn02h0moYGMYJGw=
+        distributions: "sdist bdist_wheel"
+        skip_upload_docs: true
+        on:
+          repo: akretion/odoo-test-helper
+          branch: master
+          tags: true
+  allow_failures:
+    - python: 3.8-dev
+    - env: VERSION="master"
+
+install:
+  - pip install codecov
+
+before_script:
+  - tests/script/install_requirement
+  - pip install -e .
+
+script:
+  - export PATH=${HOME}/maintainer-quality-tools/travis:${PATH}
+  - createdb db
+  - odoo -d db -i base --stop-after-init
+  - odoo -d db -i test_helper --stop-after-init --test-enable
+
+
+after_success:
+  - codecov

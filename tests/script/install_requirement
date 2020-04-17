@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -ex
+
+if [ "${INSTALL_ODOO}" == "1" ]; then
+  git clone --depth=1 https://github.com/OCA/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools
+  sed -i s/set\ -e/set\ -ex/g ${HOME}/maintainer-quality-tools/travis/travis_install_nightly
+  export PATH=${HOME}/maintainer-quality-tools/travis:${PATH}
+  travis_install_nightly
+  pip install -e ${HOME}/odoo-${VERSION}
+else
+  pip install pre-commit twine
+fi
