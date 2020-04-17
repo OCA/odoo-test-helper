@@ -19,3 +19,18 @@ Because your module is so abtract that you can do anything without real implemen
 One solution is to create a "test" module with a little implementation that use you abstract module.
 One other solution is to include models and load then in your test.
 This lib add a model loader for the test.
+
+Example
+~~~~~~~~~
+
+There is an example of test here:
+[test_example.py](test/test_helper/tests/test_example.py)
+
+This example load the class ResPartner from the file
+[models.py](test/test_helper/tests/models.py)
+
+
+Real implementation case can be found in the following module
+
+[connector_search_engine](https://github.com/OCA/search-engine/tree/12.0/connector_search_engine)
+[base_url](https://github.com/shopinvader/odoo-shopinvader/tree/12.0/base_url)
