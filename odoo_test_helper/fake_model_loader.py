@@ -13,49 +13,87 @@ class FakePackage(object):  # noqa
 
 
 class FakeModelLoader(object):
+    """Loader for Odoo tests fake models.
+
+    Usage on SavepointTestCase:
+
+        from odoo_test_helper import FakeModelLoader
+
+        @classmethod
+        def setUpClass(cls):
+            super().setUpClass()
+            cls.loader = FakeModelLoader(cls.env, cls.__module__)
+            cls.loader.backup_registry()
+            from .fake_models import MyFakeModelClass1, MyFakeModelClass2
+            cls.loader.update_registry(
+                (MyFakeModelClass1, MyFakeModelClass2)
+            )
+
+        @classmethod
+        def tearDownClass(cls):
+            cls.loader.restore_registry()
+            super().tearDownClass()
+
+    Usage on TransactionCase / HttpCase:
+
+        from odoo_test_helper import FakeModelLoader
+
+        def setUp(self):
+            super().setUp()
+            self.loader = FakeModelLoader(self.env, self.__module__)
+            self.loader.backup_registry()
+            from .fake_models import MyFakeModelClass1, MyFakeModelClass2
+            self.loader.update_registry(
+                (MyFakeModelClass1, MyFakeModelClass2)
+            )
+
+        def tearDown(self):
+            self.loader.restore_registry()
+            super().tearDown()
+    """
 
     _original_registry = None
     _original_module2modules = None
     _module_name = None
 
-    @classmethod
-    def _backup_registry(cls):
-        cls._module_name = cls.env.registry["base"]._get_addon_name(cls.__module__)
-        cls._original_registry = {}
-        cls._original_module_to_models = {}
-        for model_name, model in cls.env.registry.models.items():
-            cls._original_registry[model_name] = {
+    def __init__(self, env, __module__):
+        self.env = env
+        self._module_name = self.env.registry["base"]._get_addon_name(__module__)
+
+    def backup_registry(self):
+        self._original_registry = {}
+        self._original_module_to_models = {}
+        for model_name, model in self.env.registry.models.items():
+            self._original_registry[model_name] = {
                 "base": model.__bases__,
                 "_fields": model._fields.copy(),
                 "_inherit_children": OrderedSet(model._inherit_children._map.keys()),
                 "_inherits_children": set(model._inherits_children),
             }
         for key in module_to_models:
-            cls._original_module_to_models[key] = list(module_to_models[key])
+            self._original_module_to_models[key] = list(module_to_models[key])
 
-    @classmethod
-    def _update_registry(cls, odoo_models):
+    def update_registry(self, odoo_models):
         # Ensure that fake model are in your module
         # If you test are re-using fake model form an other module
         # the following code will inject it like it was in your module
         for model in odoo_models:
-            if model not in module_to_models[cls._module_name]:
-                module_to_models[cls._module_name].append(model)
+            if model not in module_to_models[self._module_name]:
+                module_to_models[self._module_name].append(model)
 
-        with mock.patch.object(cls.env.cr, "commit"):
-            model_names = cls.env.registry.load(
-                cls.env.cr, FakePackage(cls._module_name)
+        with mock.patch.object(self.env.cr, "commit"):
+            model_names = self.env.registry.load(
+                self.env.cr, FakePackage(self._module_name)
             )
-            cls.env.registry.setup_models(cls.env.cr)
-            cls.env.registry.init_models(
-                cls.env.cr, model_names, {"module": cls._module_name}
+            self.env.registry.setup_models(self.env.cr)
+            self.env.registry.init_models(
+                self.env.cr, model_names, {"module": self._module_name}
             )
 
-    @classmethod
-    def _restore_registry(cls):
-        for key in cls._original_registry:
-            ori = cls._original_registry[key]
-            model = cls.env.registry[key]
+    def restore_registry(self):
+        for key in self._original_registry:
+            ori = self._original_registry[key]
+            model = self.env.registry[key]
             model.__bases__ = ori["base"]
             model._inherit_children = ori["_inherit_children"]
             model._inherits_children = ori["_inherits_children"]
@@ -64,20 +102,20 @@ class FakeModelLoader(object):
                     if hasattr(model, field):
                         delattr(model, field)
             model._fields = ori["_fields"]
-        for key, _model in cls.env.registry.models.items():
-            if key not in cls._original_registry:
-                del cls.env.registry.models[key]
+        for key, _model in self.env.registry.models.items():
+            if key not in self._original_registry:
+                del self.env.registry.models[key]
 
-        for key in cls._original_module_to_models:
-            module_to_models[key] = cls._original_module_to_models[key]
+        for key in self._original_module_to_models:
+            module_to_models[key] = self._original_module_to_models[key]
 
         # reload is need to resetup correctly the field on the record
-        with mock.patch.object(cls.env.cr, "commit"):
-            cls.env.registry.model_cache.clear()
-            model_names = cls.env.registry.load(
-                cls.env.cr, FakePackage(cls._module_name)
+        with mock.patch.object(self.env.cr, "commit"):
+            self.env.registry.model_cache.clear()
+            model_names = self.env.registry.load(
+                self.env.cr, FakePackage(self._module_name)
             )
-            cls.env.registry.setup_models(cls.env.cr)
-            cls.env.registry.init_models(
-                cls.env.cr, model_names, {"module": cls._module_name}
+            self.env.registry.setup_models(self.env.cr)
+            self.env.registry.init_models(
+                self.env.cr, model_names, {"module": self._module_name}
             )
