@@ -52,17 +52,14 @@ class FakeModelLoader(object):
             super().tearDown()
     """
 
-    _original_registry = None
-    _original_module2modules = None
-    _module_name = None
-
     def __init__(self, env, __module__):
         self.env = env
         self._module_name = self.env.registry["base"]._get_addon_name(__module__)
+        self._original_registry = None
+        self._new_models = []
 
     def backup_registry(self):
         self._original_registry = {}
-        self._original_module_to_models = {}
         for model_name, model in self.env.registry.models.items():
             self._original_registry[model_name] = {
                 "base": model.__bases__,
@@ -70,16 +67,16 @@ class FakeModelLoader(object):
                 "_inherit_children": OrderedSet(model._inherit_children._map.keys()),
                 "_inherits_children": set(model._inherits_children),
             }
-        for key in module_to_models:
-            self._original_module_to_models[key] = list(module_to_models[key])
 
     def update_registry(self, odoo_models):
         # Ensure that fake model are in your module
-        # If you test are re-using fake model form an other module
+        # If you test are re-using fake model from an other module
         # the following code will inject it like it was in your module
         for model in odoo_models:
             if model not in module_to_models[self._module_name]:
                 module_to_models[self._module_name].append(model)
+            if model not in self._original_registry:
+                self._new_models.append(model)
 
         with mock.patch.object(self.env.cr, "commit"):
             model_names = self.env.registry.load(
@@ -103,12 +100,14 @@ class FakeModelLoader(object):
                         delattr(model, field)
             model._fields = ori["_fields"]
         all_models = tuple(self.env.registry.models.items())
+
         for key, _model in all_models:
             if key not in self._original_registry:
                 del self.env.registry.models[key]
 
-        for key in self._original_module_to_models:
-            module_to_models[key] = self._original_module_to_models[key]
+        for module, models_ in module_to_models.items():
+            # filter out new models
+            module_to_models[module] = [x for x in models_ if x not in self._new_models]
 
         # reload is need to resetup correctly the field on the record
         with mock.patch.object(self.env.cr, "commit"):
