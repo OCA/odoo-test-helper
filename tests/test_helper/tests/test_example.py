@@ -8,18 +8,19 @@ from odoo.tests import SavepointCase
 from odoo_test_helper import FakeModelLoader
 
 
-class TestMixin(SavepointCase, FakeModelLoader):
+class TestMixin(SavepointCase):
     @classmethod
     def setUpClass(cls):
         super(TestMixin, cls).setUpClass()
-        cls._backup_registry()
+        cls.loader = FakeModelLoader(cls.env, cls.__module__)
+        cls.loader.backup_registry()
         from .models import ResPartner
 
-        cls._update_registry([ResPartner])
+        cls.loader.update_registry((ResPartner,))
 
     @classmethod
     def tearDownClass(cls):
-        cls._restore_registry()
+        cls.loader.restore_registry()
         super(TestMixin, cls).tearDownClass()
 
     def test_create(self):

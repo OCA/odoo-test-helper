@@ -8,51 +8,55 @@ from odoo.tests import SavepointCase
 from odoo_test_helper import FakeModelLoader
 
 
-class TestMixin(SavepointCase, FakeModelLoader):
+class TestMixin(SavepointCase):
     def test_update_and_restore(self):
+        loader = FakeModelLoader(self.env, self.__module__)
+        loader.backup_registry()
+        from .models import ResPartner, ResPartnerExtra
+
         self.assertNotIn("res.partner.extra", self.env.registry)
         self.assertNotIn("test_char", self.env["res.partner"]._fields)
 
-        self._backup_registry()
-        from .models import ResPartner, ResPartnerExtra
-
-        self._update_registry([ResPartner, ResPartnerExtra])
-
+        loader.update_registry([ResPartner, ResPartnerExtra])
         self.assertIn("res.partner.extra", self.env.registry)
         self.assertIn("test_char", self.env["res.partner"]._fields)
 
-        self._restore_registry()
+        loader.restore_registry()
         self.assertNotIn("res.partner.extra", self.env.registry)
         self.assertNotIn("test_char", self.env["res.partner"]._fields)
 
     def test_load_res_partner(self):
+        loader = FakeModelLoader(self.env, self.__module__)
+        loader.backup_registry()
+
         self.assertNotIn("res.partner.extra", self.env.registry)
         self.assertNotIn("test_char", self.env["res.partner"]._fields)
 
-        self._backup_registry()
         from .models import ResPartner
 
-        self._update_registry([ResPartner])
+        loader.update_registry([ResPartner])
 
         self.assertNotIn("res.partner.extra", self.env.registry)
         self.assertIn("test_char", self.env["res.partner"]._fields)
 
-        self._restore_registry()
+        loader.restore_registry()
         self.assertNotIn("res.partner.extra", self.env.registry)
         self.assertNotIn("test_char", self.env["res.partner"]._fields)
 
     def test_load_res_partner_extra(self):
+        loader = FakeModelLoader(self.env, self.__module__)
+        loader.backup_registry()
+
         self.assertNotIn("res.partner.extra", self.env.registry)
         self.assertNotIn("test_char", self.env["res.partner"]._fields)
 
-        self._backup_registry()
         from .models import ResPartnerExtra
 
-        self._update_registry([ResPartnerExtra])
+        loader.update_registry([ResPartnerExtra])
 
         self.assertIn("res.partner.extra", self.env.registry)
         self.assertNotIn("test_char", self.env["res.partner"]._fields)
 
-        self._restore_registry()
+        loader.restore_registry()
         self.assertNotIn("res.partner.extra", self.env.registry)
         self.assertNotIn("test_char", self.env["res.partner"]._fields)
