@@ -1,0 +1,48 @@
+[tool.poetry]
+name = "odoo_test_helper"
+version = "0.0.1"
+description = "Odoo Test Helper"
+authors = ["Sébastien Beau <sebastien.beau@akretion.com>"]
+maintainers = ["Akretion <contact@akretion.com>"]
+license = "AGPL-3.0-or-later"
+readme = "README.rst"
+include = ["CHANGES.rst"]
+homepage = "http://github.com/akretion/odoo-test-helper"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU Affero General Public License v3.0 or later",
+    "Programming Language :: Python :: 2.7",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.6",
+    "Framework :: Odoo",
+]
+
+[tool.poetry.dependencies]
+python = "^2.7,^3.5,^3.6"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
+
+[tool.black]
+line-length = 88
+target-version = ['py35']
+include = '\.pyi?$'
+
+exclude = '''
+
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.tox
+    | \.venv
+    | _build
+    | build
+    | dist
+  )/
+)
+'''
