@@ -55,7 +55,7 @@ This module is inspired of the following mixin code that can be found in OCA and
 
 * Mixin in Shopinvader: https://github.com/shopinvader/odoo-shopinvader/blob/b81b921ea52c911e5b33afac88adb8f9a1c02626/base_url/tests/models_mixin.py
 
-Intial Author are
+Intial Authors are
 
 * Laurent Mignon <laurent.mignon@acsone.eu>
 * Simone Orsi <simone.orsi@camptocamp.com>
