@@ -63,8 +63,8 @@ jobs:
       python: 3.7
       env: VERSION="master"
     - stage: deploy
+      install:
       script: echo "Deploy to PyPi"
-      env: INSTALL_ODOO="0"
       deploy:
         provider: pypi
         user: __token__
