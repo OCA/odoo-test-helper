@@ -34,10 +34,17 @@ class FakeModelLoader(object):
             cls._original_module_to_models[key] = list(module_to_models[key])
 
     @classmethod
+    def _clean_module_to_model(cls):
+        for key in cls._original_module_to_models:
+            module_to_models[key] = list(cls._original_module_to_models[key])
+
+    @classmethod
     def _update_registry(cls, odoo_models):
         # Ensure that fake model are in your module
         # If you test are re-using fake model form an other module
         # the following code will inject it like it was in your module
+        cls._clean_module_to_model()
+
         for model in odoo_models:
             if model not in module_to_models[cls._module_name]:
                 module_to_models[cls._module_name].append(model)
@@ -64,14 +71,13 @@ class FakeModelLoader(object):
                     if hasattr(model, field):
                         delattr(model, field)
             model._fields = ori["_fields"]
-        for key, _model in cls.env.registry.models.items():
+        for key in list(cls.env.registry.models.keys()):
             if key not in cls._original_registry:
                 del cls.env.registry.models[key]
 
-        for key in cls._original_module_to_models:
-            module_to_models[key] = cls._original_module_to_models[key]
+        cls._clean_module_to_model()
 
-        # reload is need to resetup correctly the field on the record
+        # reload is need to resetupmodule_to_models correctly the field on the record
         with mock.patch.object(cls.env.cr, "commit"):
             cls.env.registry.model_cache.clear()
             model_names = cls.env.registry.load(
