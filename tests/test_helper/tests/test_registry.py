@@ -24,3 +24,35 @@ class TestMixin(SavepointCase, FakeModelLoader):
         self._restore_registry()
         self.assertNotIn("res.partner.extra", self.env.registry)
         self.assertNotIn("test_char", self.env["res.partner"]._fields)
+
+    def test_load_res_partner(self):
+        self.assertNotIn("res.partner.extra", self.env.registry)
+        self.assertNotIn("test_char", self.env["res.partner"]._fields)
+
+        self._backup_registry()
+        from .models import ResPartner
+
+        self._update_registry([ResPartner])
+
+        self.assertNotIn("res.partner.extra", self.env.registry)
+        self.assertIn("test_char", self.env["res.partner"]._fields)
+
+        self._restore_registry()
+        self.assertNotIn("res.partner.extra", self.env.registry)
+        self.assertNotIn("test_char", self.env["res.partner"]._fields)
+
+    def test_load_res_partner_extra(self):
+        self.assertNotIn("res.partner.extra", self.env.registry)
+        self.assertNotIn("test_char", self.env["res.partner"]._fields)
+
+        self._backup_registry()
+        from .models import ResPartnerExtra
+
+        self._update_registry([ResPartnerExtra])
+
+        self.assertIn("res.partner.extra", self.env.registry)
+        self.assertNotIn("test_char", self.env["res.partner"]._fields)
+
+        self._restore_registry()
+        self.assertNotIn("res.partner.extra", self.env.registry)
+        self.assertNotIn("test_char", self.env["res.partner"]._fields)
