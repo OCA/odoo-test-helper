@@ -64,7 +64,7 @@ class FakeModelLoader(object):
                     if hasattr(model, field):
                         delattr(model, field)
             model._fields = ori["_fields"]
-        for key, _model in cls.env.registry.models.items():
+        for key in list(cls.env.registry.models.keys()):
             if key not in cls._original_registry:
                 del cls.env.registry.models[key]
 
