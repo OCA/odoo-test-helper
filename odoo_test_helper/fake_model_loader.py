@@ -78,11 +78,24 @@ class FakeModelLoader(object):
             module_to_models[key] = list(self._original_module_to_models[key])
 
     def update_registry(self, odoo_models):
-        # Ensure that fake model are in your module
-        # If you test are re-using fake model form an other module
-        # the following code will inject it like it was in your module
-        self._clean_module_to_model()
+        # Since V13 field are computed at the end
+        # In the setup of your test if you create or modify a record that
+        # need to be recomputed we need to recompute them before reloading
+        # the registry
+        if hasattr(self.env.all, "tocompute"):
+            to_recompute_models = set()
+            for field, _vals in self.env.all.tocompute.items():
+                to_recompute_models.add(field.model_name)
+            for model in to_recompute_models:
+                self.env[model].recompute()
 
+        # In case that you are re-using fake model from an other module
+        # Odoo have already modify the module_to_models variable
+        # It updated everytime we import a python file
+        # So we need first to clean this variable
+        # then we can inject the fake class in the module_to_models
+        # so we can reload the registry correctly with only the given class
+        self._clean_module_to_model()
         for model in odoo_models:
             if model not in module_to_models[self._module_name]:
                 module_to_models[self._module_name].append(model)

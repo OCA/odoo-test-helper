@@ -57,10 +57,16 @@ jobs:
       python: 3.6
       env: VERSION="13.0"
     - stage: test
-      python: 3.8-dev
-      env: VERSION="12.0"
+      python: 3.7
+      env: VERSION="13.0"
+    - stage: test
+      python: 3.6
+      env: VERSION="14.0"
     - stage: test
       python: 3.7
+      env: VERSION="14.0"
+    - stage: test
+      python: 3.6
       env: VERSION="master"
     - stage: deploy
       install:

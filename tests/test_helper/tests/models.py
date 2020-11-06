@@ -13,6 +13,7 @@ class ResPartner(models.Model):
 
 class ResPartnerExtra(models.Model):
     _name = "res.partner.extra"
+    _description = "Res Partner Extra"
 
     partner_id = fields.Many2one("res.partner", "Partner")
     extra = fields.Char()
