@@ -18,6 +18,7 @@ setup(
     name="odoo-test-helper",
     description="Odoo Test Helper",
     long_description="\n".join(long_description),
+    long_description_content_type="text/x-rst",
     use_scm_version=True,
     packages=["odoo_test_helper"],
     include_package_data=True,

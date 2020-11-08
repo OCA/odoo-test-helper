@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 
+import logging
+
 import mock
 from odoo import models
 from odoo.tools import OrderedSet
 
 module_to_models = models.MetaModel.module_to_models
+_logger = logging.getLogger(__name__)
 
 
 class FakePackage(object):  # noqa
@@ -64,7 +67,19 @@ class FakeModelLoader(object):
         else:
             self._module_name = __module__.split(".")[2]
 
+    def _check_wrong_import(self):
+        for module, odoo_models in module_to_models.items():
+            for model in odoo_models:
+                path = model.__module__.split(".")
+                if path[3] == "tests":
+                    _logger.warning(
+                        "Wrong Import in module {}, the class {} have been already "
+                        "imported.\nPlease take a look to the README on how to "
+                        "import test class".format(module, model)
+                    )
+
     def backup_registry(self):
+        self._check_wrong_import()
         self._original_registry = {}
         self._original_module_to_models = {}
         for model_name, model in self.env.registry.models.items():

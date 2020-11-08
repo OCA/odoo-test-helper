@@ -32,7 +32,7 @@ jobs:
       script: pre-commit run --all --show-diff-on-failure
       env: TESTS="0"
     - stage: linting
-      python: 3.6
+      python: 3.8
       install: pip install pre-commit twine
       script:
         - pip wheel -w /tmp/build --no-deps .
