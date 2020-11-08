@@ -8,6 +8,7 @@ from odoo import api, fields, models
 
 class TestMixin(models.AbstractModel):
     _name = "test.mixin"
+    _description = "Test Mixin"
 
     test_char = fields.Char()
 

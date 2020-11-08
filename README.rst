@@ -40,6 +40,93 @@ Real implementation case can be found in the following module
 * `base_url <https://github.com/shopinvader/odoo-shopinvader/tree/12.0/base_url>`_.
 
 
+How to import
+~~~~~~~~~~~~~~~
+
+Be carefull importing fake class must be done in the right way.
+Importing a file will automatically add all the class in the "module_to_models"
+variable. The import **must** be done after the backup !
+
+
+
+
+
+
+Wrong way
+----------
+
+
+.. code-block:: python
+
+   from odoo.tests import SavepointCase
+
+   from odoo_test_helper import FakeModelLoader
+
+   # The fake class is imported here !! It's wrong
+   # And be carefull even if you only import ResPartner
+   # all class in the file models will be proceded by odoo
+   # so no **direct import** of a file that contain fake model
+   from .models import ResPartner
+
+
+
+
+
+   class TestMixin(SavepointCase):
+       @classmethod
+       def setUpClass(cls):
+           super(TestMixin, cls).setUpClass()
+           cls.loader = FakeModelLoader(cls.env, cls.__module__)
+           cls.loader.backup_registry()
+
+           cls.loader.update_registry((ResPartner,))
+
+       @classmethod
+       def tearDownClass(cls):
+           cls.loader.restore_registry()
+           super(TestMixin, cls).tearDownClass()
+
+       def test_create(self):
+           partner = self.env["res.partner"].create({"name": "BAR", "test_char": "youhou"})
+           self.assertEqual(partner.name, "FOO-BAR")
+           self.assertEqual(partner.test_char, "youhou")
+
+
+Right Way
+----------
+
+.. code-block:: python
+
+    from odoo.tests import SavepointCase
+
+    from odoo_test_helper import FakeModelLoader
+
+
+    class TestMixin(SavepointCase):
+        @classmethod
+        def setUpClass(cls):
+            super(TestMixin, cls).setUpClass()
+            cls.loader = FakeModelLoader(cls.env, cls.__module__)
+            cls.loader.backup_registry()
+
+            # The fake class is imported here !! After the backup_registry
+            from .models import ResPartner
+
+            cls.loader.update_registry((ResPartner,))
+
+        @classmethod
+        def tearDownClass(cls):
+            cls.loader.restore_registry()
+            super(TestMixin, cls).tearDownClass()
+
+        def test_create(self):
+            partner = self.env["res.partner"].create({"name": "BAR", "test_char": "youhou"})
+            self.assertEqual(partner.name, "FOO-BAR")
+            self.assertEqual(partner.test_char, "youhou")
+
+
+
+
 Contributor
 ~~~~~~~~~~~~
 

@@ -12,6 +12,10 @@ class TestMixin(SavepointCase):
     @classmethod
     def setUpClass(cls):
         super(TestMixin, cls).setUpClass()
+
+        # Creating a record before loading a fake model should work
+        cls.env["res.partner"].create({"name": "Setup Class Foo"})
+
         cls.loader = FakeModelLoader(cls.env, cls.__module__)
         cls.loader.backup_registry()
         from .models import ResPartner
