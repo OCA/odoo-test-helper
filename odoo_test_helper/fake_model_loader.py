@@ -58,7 +58,11 @@ class FakeModelLoader(object):
 
     def __init__(self, env, __module__):
         self.env = env
-        self._module_name = self.env.registry["base"]._get_addon_name(__module__)
+        if hasattr(self.env.registry["base"], "_get_addon_name"):
+            # Only before V14
+            self._module_name = self.env.registry["base"]._get_addon_name(__module__)
+        else:
+            self._module_name = __module__.split(".")[2]
 
     def backup_registry(self):
         self._original_registry = {}
