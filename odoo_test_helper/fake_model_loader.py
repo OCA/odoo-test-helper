@@ -149,9 +149,11 @@ class FakeModelLoader(object):
 
         self._clean_module_to_model()
 
-        # reload is need to resetup correctly the field on the record
+        # reload is need to reset correctly the field on the record
         with mock.patch.object(self.env.cr, "commit"):
-            self.env.registry.model_cache.clear()
+            # Only before V15
+            if hasattr(self.env.registry, "model_cache"):
+                self.env.registry.model_cache.clear()
             model_names = self.env.registry.load(
                 self.env.cr, FakePackage(self._module_name)
             )
