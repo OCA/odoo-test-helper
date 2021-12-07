@@ -141,9 +141,11 @@ class FakeModelLoader(object):
                         delattr(model, field)
             model._fields = ori["_fields"]
 
-        for key in list(self.env.registry.models.keys()):
-            if key not in self._original_registry:
-                del self.env.registry.models[key]
+        # delete 1st models w/out children
+        sorted_models = sorted(self.env.registry.models.items(), key=lambda x: x[1]._inherit_children)
+        for name, model in sorted_models:
+            if name not in self._original_registry:
+                del self.env.registry.models[name]
 
         self._clean_module_to_model()
 
