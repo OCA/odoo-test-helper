@@ -142,8 +142,10 @@ class FakeModelLoader(object):
             model._fields = ori["_fields"]
 
         # delete 1st models w/out children
-        sorted_models = sorted(self.env.registry.models.items(), key=lambda x: x[1]._inherit_children)
-        for name, model in sorted_models:
+        sorted_models = sorted(
+            self.env.registry.models.items(), key=lambda x: x[1]._inherit_children
+        )
+        for name, __ in sorted_models:
             if name not in self._original_registry:
                 del self.env.registry.models[name]
 
