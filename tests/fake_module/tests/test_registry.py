@@ -14,11 +14,11 @@ else:
 from odoo_test_helper import FakeModelLoader
 
 
-class TestMixin(TransactionCase):
+class TestRegistry(TransactionCase):
     def test_update_and_restore(self):
         loader = FakeModelLoader(self.env, self.__module__)
         loader.backup_registry()
-        from .models import ResPartner, ResPartnerExtra
+        from ._models import ResPartner, ResPartnerExtra
 
         self.assertNotIn("res.partner.extra", self.env.registry)
         self.assertNotIn("test_char", self.env["res.partner"]._fields)
@@ -39,7 +39,7 @@ class TestMixin(TransactionCase):
         self.assertNotIn("extra2", self.env["res.partner"]._fields)
         self.assertNotIn("test_char", self.env["res.partner"]._fields)
 
-        from .models import ResPartner
+        from ._models import ResPartner
 
         loader.update_registry([ResPartner])
 
@@ -59,7 +59,7 @@ class TestMixin(TransactionCase):
         self.assertNotIn("res.partner.extra", self.env.registry)
         self.assertNotIn("test_char", self.env["res.partner"]._fields)
 
-        from .models import ResPartnerExtra
+        from ._models import ResPartnerExtra
 
         loader.update_registry([ResPartnerExtra])
 

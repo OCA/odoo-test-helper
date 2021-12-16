@@ -17,6 +17,71 @@ jobs:
         with:
           python-version: "3.11"
       - uses: pre-commit/action@v2.0.0
+
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - python-version: "2.7"
+            toxenv: "py27-10.0"
+          - python-version: "3.5"
+            toxenv: "py35-11.0"
+          - python-version: "3.6"
+            toxenv: "py36-12.0"
+          - python-version: "3.6"
+            toxenv: "py36-13.0"
+          - python-version: "3.6"
+            toxenv: "py36-14.0"
+          - python-version: "3.6"
+            toxenv: "py36-15.0"
+          - python-version: "3.8"
+            toxenv: "py38-15.0"
+          # - python-version: "3.8"
+          #   toxenv: "py38-master"
+          - python-version: "3.8"
+            toxenv: "twine_check"
+
+    services:
+      postgres:
+        image: postgres:9.6
+        env:
+          POSTGRES_USER: odoo
+          POSTGRES_PASSWORD: odoo
+        ports:
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options:
+          --health-cmd pg_isready --health-interval 10s --health-timeout 5s
+          --health-retries 5
+
+    env:
+      PGHOST: localhost
+      PGPORT: 5432
+      PGUSER: odoo
+      PGPASSWORD: odoo
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "${{ matrix.python-version }}"
+      - uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ matrix.toxenv }}
+      - name: Install system dependencies
+        run: |
+          sudo apt-get install -qq --no-install-recommends \
+            libxml2-dev libxslt1-dev \
+            libldap2-dev libsasl2-dev \
+            gettext
+          pip install tox virtualenv
+      - name: Run tox
+        run: tox -e ${{ matrix.toxenv }}
+      - uses: codecov/codecov-action@v1
+
   deploy:
     runs-on: ubuntu-latest
     needs:

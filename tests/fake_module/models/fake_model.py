@@ -6,13 +6,13 @@
 from odoo import api, fields, models
 
 
-class TestMixin(models.AbstractModel):
-    _name = "test.mixin"
-    _description = "Test Mixin"
+class FakeModel(models.AbstractModel):
+    _name = "fake.model"
+    _description = "Test Model"
 
-    test_char = fields.Char()
+    name = fields.Char()
 
     @api.model
     def create(self, vals):
         vals["name"] = "FOO-{}".format(vals["name"])
-        return super(TestMixin, self).create(vals)
+        return super(FakeModel, self).create(vals)
