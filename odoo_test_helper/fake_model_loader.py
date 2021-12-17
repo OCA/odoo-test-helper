@@ -1,4 +1,11 @@
 # -*- coding: utf-8 -*-
+# Copyright 2018 ACSONE (http://www.acsone.eu).
+# @author: Laurent Mignon <laurent.mignon@acsone.eu>
+# Copyright 2018 Camptocamp SA (http://www.camptocamp.com).
+# @author: Simone Orsi <simone.orsi@camptocamp.com>
+# Copyright 2020 Akretion (http://www.akretion.com).
+# @author: Sébastien BEAU <sebastien.beau@akretion.com>
+# License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 
 import logging
 
@@ -142,8 +149,10 @@ class FakeModelLoader(object):
             model._fields = ori["_fields"]
 
         # delete 1st models w/out children
-        sorted_models = sorted(self.env.registry.models.items(), key=lambda x: x[1]._inherit_children)
-        for name, model in sorted_models:
+        sorted_models = sorted(
+            self.env.registry.models.items(), key=lambda x: x[1]._inherit_children
+        )
+        for name, __ in sorted_models:
             if name not in self._original_registry:
                 del self.env.registry.models[name]
 

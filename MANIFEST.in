@@ -1,3 +1,0 @@
-exclude .gitignore
-exclude .travis.yml
-exclude .pre-commit-config.yaml

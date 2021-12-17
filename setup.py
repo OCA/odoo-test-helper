@@ -13,28 +13,32 @@ with open(os.path.join("README.rst")) as f:
 with open(os.path.join("CHANGES.rst")) as f:
     long_description.append(f.read())
 
+LICENSE = "GNU Lesser General Public License v3 or later (LGPLv3+)"
 
 setup(
     name="odoo-test-helper",
+    use_scm_version=True,
     description="Odoo Test Helper",
     long_description="\n".join(long_description),
     long_description_content_type="text/x-rst",
-    use_scm_version=True,
     packages=["odoo_test_helper"],
     include_package_data=True,
     setup_requires=["setuptools_scm"],
-    license="AGPLv3+",
-    author="Akretion",
-    author_email="contact@akretion.com",
-    url="http://github.com/akretion/odoo-test-helper",
+    license="LGPLv3+",
+    author="Odoo Community Association (OCA)",
+    author_email="support@odoo-community.org",
+    url="http://github.com/OCA/odoo-test-helper",
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
-        "License :: OSI Approved :: "
-        "GNU Affero General Public License v3 or later (AGPLv3+)",
+        "License :: OSI Approved :: " + LICENSE,
+        "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "Framework :: Odoo",
     ],
 )

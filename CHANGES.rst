@@ -6,7 +6,20 @@ Changes
 .. - ...
 
 
-0.0.1
---------
+2.0.0
+-----
 
-- add fake module loader
+- Move to OCA
+- Re-license to LGPL
+
+
+1.1.0
+-----
+
+- Refactoring (misc imp/fix)
+
+
+1.0.0
+-----
+
+- Initial release

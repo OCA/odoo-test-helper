@@ -25,12 +25,7 @@ env:
 
 jobs:
   include:
-    - stage: linting
-      name: "pre-commit"
-      python: 3.6
-      install: pip install pre-commit
-      script: pre-commit run --all --show-diff-on-failure
-      env: TESTS="0"
+    # TODO: move to GH actions
     - stage: linting
       python: 3.8
       install: pip install pre-commit twine
@@ -68,20 +63,7 @@ jobs:
     - stage: test
       python: 3.6
       env: VERSION="master"
-    - stage: deploy
-      install:
-      script: echo "Deploy to PyPi"
-      deploy:
-        provider: pypi
-        user: __token__
-        password:
-          secure: qosGOrXo9xfFp3k7BmJyvQxoPz30IFS2eFaGB/fe01kTXjG/GmxOpF1dgLieNdezE7fBBJ5mxfTvWiIPlNiPDINqcqV8+ngpj6kkElJgLDAkki8XNacEAk1/efR+Tz8oyvAcZbGv+fRXQq3NbXuvqP/UW966XnTT5kmD//vXvCPWeIeFp7ETFlrpKqFXWxV7ZJtcQ2JoYmPQVp5RmRwwnSOftPHDxxc7FJ8Ctk6qoOofREU3DcDRSlu8dZsF6Mas3sI7k2d+q6Qdtg7bMQD4I1jP6/pVqbSjpYl1D88H1GNjLky8oLe6CSGzWAyoNswUU+TBpxW/TqvgqJAv3u69uqy7Ohzrjq+DItXE+XVFnP4Gnj6A8u1YnSgmQHGAvWypC6FQbhktErgBWQzTco9zc7VpzhKdYIFzKjR7tA0GTXWo1cl1aPYBxfybPGPRXXc4dRuDAMtZIIlCc870t9TGhgSu/cU/Y0Q4tKIOHkgS119bbI8aKTdP/ak00V8poyk++5wzr3u7+hTiROk6GQL97hiL0cxow5nnTx7Tm4aC/TlQz+Hrfw4yCAyQF5XEJu5QoSmtseoBH1xBqh8s/ZhzMiwV1s2BAZX7Q2JUepou4zjvLsaeTDxkJWyTyFxehex/F7QMAPIZy6IO+yk9crw4kA5o8I1nqoyLbNZyxQCLdMA=
-        distributions: "sdist bdist_wheel"
-        skip_upload_docs: true
-        on:
-          repo: akretion/odoo-test-helper
-          branch: master
-          tags: true
+  # TODO: test 3.8
   allow_failures:
     - python: 3.8-dev
     - env: VERSION="master"

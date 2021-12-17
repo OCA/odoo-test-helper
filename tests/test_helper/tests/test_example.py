@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2020 Akretion (http://www.akretion.com).
-# @author Sébastien BEAU <sebastien.beau@akretion.com>
-# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+# @author: Sébastien BEAU <sebastien.beau@akretion.com>
+# License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 
 from odoo.tests import SavepointCase
 
