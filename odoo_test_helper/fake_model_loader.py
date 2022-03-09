@@ -9,9 +9,13 @@
 
 import logging
 
-import mock
 from odoo import models
 from odoo.tools import OrderedSet
+
+try:
+    from unittest import mock
+except ImportError:
+    import mock
 
 module_to_models = models.MetaModel.module_to_models
 _logger = logging.getLogger(__name__)
