@@ -112,7 +112,9 @@ class FakeModelLoader(object):
         # In the setup of your test if you create or modify a record that
         # need to be recomputed we need to recompute them before reloading
         # the registry
-        if hasattr(self.env.all, "tocompute"):
+        if hasattr(self.env, "flush_all"):  # Odoo 16 and later
+            self.env.flush_all()
+        elif hasattr(self.env.all, "tocompute"):
             to_recompute_models = set()
             for field, _vals in self.env.all.tocompute.items():
                 to_recompute_models.add(field.model_name)
@@ -143,7 +145,11 @@ class FakeModelLoader(object):
         for key in self._original_registry:
             ori = self._original_registry[key]
             model = self.env.registry[key]
-            model.__bases__ = ori["base"]
+            if hasattr(model, "_BaseModel__base_classes"):
+                model._BaseModel__base_classes = ori["base"]
+            else:
+                # Before V16
+                model.__bases__ = ori["base"]
             model._inherit_children = ori["_inherit_children"]
             model._inherits_children = ori["_inherits_children"]
             for field in model._fields:
