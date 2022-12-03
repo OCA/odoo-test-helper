@@ -61,6 +61,12 @@ jobs:
       python: 3.7
       env: VERSION="14.0"
     - stage: test
+      python: 3.8
+      env: VERSION="15.0"
+    - stage: test
+      python: 3.8
+      env: VERSION="16.0"
+    - stage: test
       python: 3.6
       env: VERSION="master"
   # TODO: test 3.8
