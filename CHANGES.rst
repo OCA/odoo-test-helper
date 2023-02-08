@@ -5,6 +5,24 @@ Changes
 .. ----------
 .. - ...
 
+
+2.0.3
+-----
+
+- [FIX] restore_registry in Odoo 16
+
+    See odoo/odoo@cd12293
+
+    This new attribute is the source of truth for the base classes
+    and in setup_models (called further down in the modified code in this PR),
+    the model's base classes are reset from it:
+
+    https://github.com/odoo/odoo/blob/e1f06479a526c703ccabc441b1e194646206b966/odoo/models.py#L2728-L2730.
+
+    The test failure fixed by this PR can be inspected in
+    https://app.travis-ci.com/github/OCA/odoo-test-helper/builds/258453331
+
+
 2.0.2
 -----
 
