@@ -36,6 +36,7 @@ class TestMixin(TransactionCase):
         loader.backup_registry()
 
         self.assertNotIn("res.partner.extra", self.env.registry)
+        self.assertNotIn("extra2", self.env["res.partner"]._fields)
         self.assertNotIn("test_char", self.env["res.partner"]._fields)
 
         from .models import ResPartner
@@ -43,10 +44,12 @@ class TestMixin(TransactionCase):
         loader.update_registry([ResPartner])
 
         self.assertNotIn("res.partner.extra", self.env.registry)
+        self.assertIn("extra2", self.env["res.partner"]._fields)
         self.assertIn("test_char", self.env["res.partner"]._fields)
 
         loader.restore_registry()
         self.assertNotIn("res.partner.extra", self.env.registry)
+        self.assertNotIn("extra2", self.env["res.partner"]._fields)
         self.assertNotIn("test_char", self.env["res.partner"]._fields)
 
     def test_load_res_partner_extra(self):

@@ -34,6 +34,9 @@ class TestMixin(TransactionCase):
         super(TestMixin, cls).tearDownClass()
 
     def test_create(self):
-        partner = self.env["res.partner"].create({"name": "BAR", "test_char": "youhou"})
+        partner = self.env["res.partner"].create(
+            {"name": "BAR", "test_char": "youhou", "extra2": "quod"}
+        )
         self.assertEqual(partner.name, "FOO-BAR")
         self.assertEqual(partner.test_char, "youhou")
+        self.assertEqual(partner.extra2, "quod")
