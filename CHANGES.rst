@@ -4,7 +4,10 @@ Changes
 .. Future (?)
 .. ----------
 .. - ...
+2.0.5
+-----
 
+- [FIX] AttributeError in Odoo 15+, regression introduced in 2.0.3
 
 2.0.3
 -----
