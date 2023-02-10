@@ -10,6 +10,8 @@ class ResPartner(models.Model):
     _inherit = ["res.partner", "test.mixin"]
     _name = "res.partner"
 
+    extra2 = fields.Char()
+
 
 class ResPartnerExtra(models.Model):
     _name = "res.partner.extra"

@@ -145,11 +145,9 @@ class FakeModelLoader(object):
         for key in self._original_registry:
             ori = self._original_registry[key]
             model = self.env.registry[key]
-            if hasattr(model, "_BaseModel__base_classes"):
+            if hasattr(model, "_BaseModel__base_classes"):  # As of 15.0
                 model._BaseModel__base_classes = ori["base"]
-            else:
-                # Before V16
-                model.__bases__ = ori["base"]
+            model.__bases__ = ori["base"]
             model._inherit_children = ori["_inherit_children"]
             model._inherits_children = ori["_inherits_children"]
             for field in model._fields:
