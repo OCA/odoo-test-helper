@@ -5,6 +5,11 @@ Changes
 .. ----------
 .. - ...
 
+2.1.0
+-----
+
+- [IMP] Allow to ignore Odoo core modules to avoid warning
+
 2.0.5
 -----
 
