@@ -10,12 +10,15 @@
 import logging
 
 from odoo import models
+from odoo.release import version_info
 from odoo.tools import OrderedSet
 
 try:
     from unittest import mock
 except ImportError:
     import mock
+
+from .whitelist import WHITELIST
 
 module_to_models = models.MetaModel.module_to_models
 _logger = logging.getLogger(__name__)
@@ -79,10 +82,13 @@ class FakeModelLoader(object):
             self._module_name = __module__.split(".")[2]
 
     def _check_wrong_import(self):
+        version = str(version_info[0])
+        modules_to_ignore = WHITELIST.get(version, [])
         for module, odoo_models in module_to_models.items():
             for model in odoo_models:
-                path = model.__module__.split(".")
-                if path[3] == "tests":
+                module_path = model.__module__
+                path = module_path.split(".")
+                if module_path not in modules_to_ignore and path[3] == "tests":
                     _logger.warning(
                         "Wrong Import in module {}, the class {} have been already "
                         "imported.\nPlease take a look to the README on how to "
