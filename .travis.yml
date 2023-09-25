@@ -30,6 +30,7 @@ jobs:
       python: 3.8
       install: pip install pre-commit twine
       script:
+        - pip install "urllib3>=1.25.7,<2"
         - pip wheel -w /tmp/build --no-deps .
         - twine check /tmp/build/*
       env: TESTS="0"
