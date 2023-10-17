@@ -112,6 +112,11 @@ class FakeModelLoader(object):
     def _clean_module_to_model(self):
         for key in self._original_module_to_models:
             module_to_models[key] = list(self._original_module_to_models[key])
+        for key in set(module_to_models.keys()).difference(
+            self._original_module_to_models.keys()
+        ):
+            # remove module that have been added during the test
+            del module_to_models[key]
 
     def update_registry(self, odoo_models):
         # Since V13 field are computed at the end
