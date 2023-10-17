@@ -5,6 +5,13 @@ Changes
 .. ----------
 .. - ...
 
+2.1.1
+-----
+
+[FIX] FakeModelLoader: avoid loading module again on restore_registry() for Odoo 15.0+
+[FIX] Ensures registy is cleaned up in addons without models
+
+
 2.1.0
 -----
 
