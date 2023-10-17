@@ -177,15 +177,16 @@ class FakeModelLoader(object):
 
         self._clean_module_to_model()
 
-        # reload is need to reset correctly the field on the record
-        with mock.patch.object(self.env.cr, "commit"):
-            # Only before V15
-            if hasattr(self.env.registry, "model_cache"):
+        # reload is needed to reset correctly the field on the record
+        # but only up to Odoo 14
+        if version_info[0] < 15:
+
+            with mock.patch.object(self.env.cr, "commit"):
                 self.env.registry.model_cache.clear()
-            model_names = self.env.registry.load(
-                self.env.cr, FakePackage(self._module_name)
-            )
-            self.env.registry.setup_models(self.env.cr)
-            self.env.registry.init_models(
-                self.env.cr, model_names, {"module": self._module_name}
-            )
+                model_names = self.env.registry.load(
+                    self.env.cr, FakePackage(self._module_name)
+                )
+                self.env.registry.setup_models(self.env.cr)
+                self.env.registry.init_models(
+                    self.env.cr, model_names, {"module": self._module_name}
+                )
