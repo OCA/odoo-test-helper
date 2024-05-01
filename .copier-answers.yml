@@ -15,7 +15,7 @@ odoo_version: 16.0
 org_name: Odoo Community Association (OCA)
 org_slug: OCA
 rebel_module_groups: []
-repo_description: null
+repo_description: ""
 repo_name: odoo-test-helper
 repo_slug: odoo-test-helper
 repo_website: https://github.com/OCA/odoo-test-helper
