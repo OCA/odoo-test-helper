@@ -72,10 +72,10 @@ Wrong way
 
 
 
-   class TestMixin(SavepointCase):
+   class FakeModel(SavepointCase):
        @classmethod
        def setUpClass(cls):
-           super(TestMixin, cls).setUpClass()
+           super(FakeModel, cls).setUpClass()
            cls.loader = FakeModelLoader(cls.env, cls.__module__)
            cls.loader.backup_registry()
 
@@ -84,7 +84,7 @@ Wrong way
        @classmethod
        def tearDownClass(cls):
            cls.loader.restore_registry()
-           super(TestMixin, cls).tearDownClass()
+           super(FakeModel, cls).tearDownClass()
 
        def test_create(self):
            partner = self.env["res.partner"].create({"name": "BAR", "test_char": "youhou"})
@@ -102,10 +102,10 @@ Right Way
     from odoo_test_helper import FakeModelLoader
 
 
-    class TestMixin(SavepointCase):
+    class FakeModel(SavepointCase):
         @classmethod
         def setUpClass(cls):
-            super(TestMixin, cls).setUpClass()
+            super(FakeModel, cls).setUpClass()
             cls.loader = FakeModelLoader(cls.env, cls.__module__)
             cls.loader.backup_registry()
 
@@ -117,7 +117,7 @@ Right Way
         @classmethod
         def tearDownClass(cls):
             cls.loader.restore_registry()
-            super(TestMixin, cls).tearDownClass()
+            super(FakeModel, cls).tearDownClass()
 
         def test_create(self):
             partner = self.env["res.partner"].create({"name": "BAR", "test_char": "youhou"})

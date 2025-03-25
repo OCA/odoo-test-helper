@@ -1,0 +1,74 @@
+[project]
+name = "odoo-test-helper"
+authors = [
+    {name = "ACSONE", email="info@acsone.eu"},
+    {name = "Akretion", email="info@akretion.com"},
+    {name = "Camptocamp", email="info@camptocamp.com"},
+]
+description = "Our Odoo project tools"
+readme = "README.rst"
+keywords = ["odoo", "project"]
+license = {file = "LICENSE"}
+classifiers = [
+    "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
+    "Programming Language :: Python :: 3",
+    "Framework :: Odoo",
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+]
+dependencies = [
+]
+requires-python = ">=3.8"
+dynamic = ["version"]
+
+[project.urls]
+homepage = "https://github.com/oca/odoo-test-helper"
+documentation = "https://github.com/oca/odoo-test-helper"
+repository = "https://github.com/oca/odoo-test-helper"
+
+[project.optional-dependencies]
+test = []
+convert = []
+
+[build-system]
+requires = ["setuptools>=64", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages]
+find = {}
+
+[tool.setuptools_scm]
+
+[tool.pytest.ini_options]
+markers = [
+    "project_setup",
+]
+
+[tool.black]
+line-length = 88
+skip-string-normalization = "True"
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+select = [
+  "F",        # pyflakes
+  "E",        # pycodestyle (errors)
+  "W",        # pycodestyle (warnings)
+  "C90",      # mccabe
+  "I",        # isort
+  "UP",       # pyupgrade
+  "B",        # flake8-bugbear
+  "Q",        # flake8-quotes
+]
+ignore = [
+  "E501",     # line too long (if black is happy, we're happy)
+  "UP031",    # pyupgrade: use format specifiers instead of percent format (TODO: enable)
+  "E721",     # do not compare types, use 'isinstance()' (TODO: enable)
+  "B008",     # do not perform calls in argument defaults (TODO: enable)
+]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 16
