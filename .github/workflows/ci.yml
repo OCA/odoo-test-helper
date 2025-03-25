@@ -21,6 +21,8 @@ jobs:
       matrix:
         include:
           # Test only w/ OCB just to reduce exec time.
+          - container: ghcr.io/oca/oca-ci/py3.8-ocb15.0:latest
+            name: test with OCB
           - container: ghcr.io/oca/oca-ci/py3.10-ocb16.0:latest
             name: test with OCB
           - container: ghcr.io/oca/oca-ci/py3.10-ocb17.0:latest
