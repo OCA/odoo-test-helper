@@ -5,10 +5,10 @@ cache:
   - $HOME/.cache/pre-commit
 
 python:
-  - "3.6"
+  - "3.12"
 
 addons:
-  postgresql: "9.6"
+  postgresql: "14.17"
   apt:
     packages:
       - expect-dev  # provides unbuffer utility
@@ -21,40 +21,19 @@ stages:
 
 env:
   global:
-  - VERSION="10.0" TESTS="1" LINT_CHECK="0" MAKEPOT="0" ODOO_REPO="odoo/odoo"
+  - VERSION="18.0" TESTS="1" LINT_CHECK="0" MAKEPOT="0" ODOO_REPO="odoo/odoo"
 
 jobs:
   include:
     # TODO: move to GH actions
     - stage: linting
-      python: 3.8
+      python: 3.12
       install: pip install pre-commit twine
       script:
-        - pip install "urllib3>=1.25.7,<2"
+        # - pip install "urllib3>=1.25.7,<2"
         - pip wheel -w /tmp/build --no-deps .
         - twine check /tmp/build/*
       env: TESTS="0"
-    - stage: test
-      python: 2.7
-      env: VERSION="10.0"
-    - stage: test
-      python: 3.5
-      env: VERSION="11.0"
-    - stage: test
-      python: 3.5
-      env: VERSION="12.0"
-    - stage: test
-      python: 3.6
-      env: VERSION="12.0"
-    - stage: test
-      python: 3.7
-      env: VERSION="12.0"
-    - stage: test
-      python: 3.6
-      env: VERSION="13.0"
-    - stage: test
-      python: 3.7
-      env: VERSION="13.0"
     - stage: test
       python: 3.6
       env: VERSION="14.0"
@@ -68,7 +47,16 @@ jobs:
       python: 3.8
       env: VERSION="16.0"
     - stage: test
-      python: 3.6
+      python: 3.11
+      env: VERSION="17.0"
+    - stage: test
+      python: 3.11
+      env: VERSION="18.0"
+    - stage: test
+      python: 3.12
+      env: VERSION="18.0"
+    - stage: test
+      python: 3.12
       env: VERSION="master"
   # TODO: test 3.8
   allow_failures:
