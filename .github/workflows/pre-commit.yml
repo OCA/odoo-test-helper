@@ -1,4 +1,4 @@
-name: CI
+name: Pre-commit
 
 on:
   pull_request:
