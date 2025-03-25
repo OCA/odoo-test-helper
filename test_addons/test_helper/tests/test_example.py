@@ -24,7 +24,7 @@ class TestExample(TransactionCase):
 
         cls.loader = FakeModelLoader(cls.env, cls.__module__)
         cls.loader.backup_registry()
-        from ._models import ResPartner
+        from .models import ResPartner
 
         cls.loader.update_registry((ResPartner,))
 

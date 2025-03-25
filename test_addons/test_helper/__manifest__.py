@@ -6,7 +6,7 @@
 {
     "name": "Test Helper",
     "summary": "Fake module for testing",
-    "version": "15.0.1.0.0",
+    "version": "0.0.0",
     "category": "Uncategorized",
     "website": "http://github.com/OCA/odoo-test-helper",
     "author": " Odoo Community Association (OCA)",

@@ -7,7 +7,7 @@ from odoo import fields, models
 
 
 class ResPartner(models.Model):
-    _inherit = ["res.partner", "fake.model"]
+    _inherit = ["res.partner", "test.mixin"]
     _name = "res.partner"
 
     extra2 = fields.Char()
