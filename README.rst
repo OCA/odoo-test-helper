@@ -27,11 +27,11 @@ Example
 
 There is an example of test here:
 
-* `test_example.py <https://github.com/akretion/odoo-test-helper/blob/master/tests/test_helper/tests/test_example.py>`_.
+* `test_example.py <https://github.com/akretion/odoo-test-helper/blob/master/test_addons/test_helper/tests/test_example.py>`_.
 
 This example load the class ResPartner from the file:
 
-* `models.py <https://github.com/akretion/odoo-test-helper/blob/master/tests/test_helper/tests/models.py>`_.
+* `models.py <https://github.com/akretion/odoo-test-helper/blob/master/test_addons/test_helper/tests/models.py>`_.
 
 
 Real implementation case can be found in the following module
