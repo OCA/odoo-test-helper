@@ -20,7 +20,10 @@ except ImportError:
 
 from .whitelist import WHITELIST
 
-module_to_models = models.MetaModel.module_to_models
+try:
+    module_to_models = models.MetaModel.module_to_models
+except AttributeError:
+    module_to_models = models.MetaModel._module_to_models__
 _logger = logging.getLogger(__name__)
 
 
@@ -144,10 +147,16 @@ class FakeModelLoader(object):
                 module_to_models[self._module_name].append(model)
 
         with mock.patch.object(self.env.cr, "commit"):
-            model_names = self.env.registry.load(
-                self.env.cr, FakePackage(self._module_name)
-            )
-            self.env.registry.setup_models(self.env.cr)
+            try:
+                model_names = self.env.registry.load(
+                    self.env.cr, FakePackage(self._module_name)
+                )
+            except TypeError:
+                model_names = self.env.registry.load(FakePackage(self._module_name))
+            try:
+                self.env.registry.setup_models(self.env.cr)
+            except AttributeError:
+                self.env.registry._setup_models__(self.env.cr)
             self.env.registry.init_models(
                 self.env.cr, model_names, {"module": self._module_name}
             )
