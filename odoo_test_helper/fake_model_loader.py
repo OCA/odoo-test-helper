@@ -14,6 +14,17 @@ from odoo.release import version_info
 from odoo.tools import OrderedSet
 
 try:
+    from odoo.tests.common import SETATTR_SOURCES
+
+    SETATTR_SOURCES.update(
+        {
+            "update_registry": ("/odoo_test_helper/fake_model_loader.py",),
+            "restore_registry": ("/odoo_test_helper/fake_model_loader.py",),
+        }
+    )
+except ImportError:
+    pass
+try:
     from unittest import mock
 except ImportError:
     import mock

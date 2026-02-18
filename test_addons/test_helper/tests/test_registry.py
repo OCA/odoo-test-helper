@@ -15,18 +15,13 @@ from odoo_test_helper import FakeModelLoader
 
 
 class TestMixin(TransactionCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.loader = FakeModelLoader(cls.env, cls.__module__)
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.loader.restore_registry()
-        super().tearDownClass()
+    def tearDown(self):
+        self.loader.restore_registry()
+        super().tearDown()
 
     def setUp(self):
         super().setUp()
+        self.loader = FakeModelLoader(self.env, self.__module__)
         self.loader.backup_registry()
 
     def test_update_and_restore(self):
