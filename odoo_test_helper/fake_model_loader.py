@@ -172,10 +172,12 @@ class FakeModelLoader(object):
             model.__bases__ = ori["base"]
             model._inherit_children = ori["_inherit_children"]
             model._inherits_children = ori["_inherits_children"]
+            # Apply same logic as in TransactionCase's `check_attrs`
+            changeables = vars(model)
             for field in model._fields:
-                if field not in ori["_fields"]:
-                    if hasattr(model, field):
-                        delattr(model, field)
+                if not field.startswith("x_") and field in changeables:
+                    delattr(model, field)
+
             model._fields = ori["_fields"]
 
         # delete 1st models w/out children
