@@ -15,23 +15,21 @@ from odoo_test_helper import FakeModelLoader
 
 
 class TestExample(TransactionCase):
-    @classmethod
-    def setUpClass(cls):
-        super(TestExample, cls).setUpClass()
+    def setUp(self):
+        super(TestExample, self).setUp()
 
         # Creating a record before loading a fake model should work
-        cls.env["res.partner"].create({"name": "Setup Class Foo"})
+        self.env["res.partner"].create({"name": "Setup Class Foo"})
 
-        cls.loader = FakeModelLoader(cls.env, cls.__module__)
-        cls.loader.backup_registry()
+        self.loader = FakeModelLoader(self.env, self.__module__)
+        self.loader.backup_registry()
         from .models import ResPartner
 
-        cls.loader.update_registry((ResPartner,))
+        self.loader.update_registry((ResPartner,))
 
-    @classmethod
-    def tearDownClass(cls):
-        cls.loader.restore_registry()
-        super(TestExample, cls).tearDownClass()
+    def tearDown(self):
+        self.loader.restore_registry()
+        super(TestExample, self).tearDown()
 
     def test_create(self):
         partner = self.env["res.partner"].create(
