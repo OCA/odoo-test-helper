@@ -7,19 +7,22 @@ odoo-test-helper
 .. image:: https://badge.fury.io/py/odoo-test-helper.svg
     :target: http://badge.fury.io/py/odoo-test-helper
 
-odoo-test-helper is toolbox for writing odoo test
+odoo-test-helper is a toolbox for writing odoo tests.
 
+IMPORTANT: This library is not needed for Odoo 19+. You can achieve the same using native
+code. See https://github.com/OCA/maintainer-tools/wiki/Migration-to-version-19.0 for
+the explanation looking for `odoo-test-helper` text.
 
 Loading Fake models
 ~~~~~~~~~~~~~~~~~~~
 
-Sometime you build an abstract module that can be use by many modules.
-In such case, if you want to test it with real records you need to register real models.
+Sometimes, you build an abstract module that can be use by many modules.
+In such case, if you want to test it with real records, you need to register real models.
 
 One solution is to create a `module_test` module
 with a little implementation that use your abstract model.
 
-One other solution is define test only models and load them in tests.
+Other solution is to define test only models and load them in tests.
 This lib makes this possible and easy.
 
 Example
@@ -39,22 +42,15 @@ Real implementation case can be found in the following module
 * `connector_search_engine <https://github.com/OCA/search-engine/tree/12.0/connector_search_engine>`_.
 * `base_url <https://github.com/shopinvader/odoo-shopinvader/tree/12.0/base_url>`_.
 
-
 How to import
 ~~~~~~~~~~~~~~~
 
-Be carefull importing fake class must be done in the right way.
+Be careful importing the fake class. It must be done in the right way.
 Importing a file will automatically add all the class in the "module_to_models"
 variable. The import **must** be done after the backup !
 
-
-
-
-
-
 Wrong way
 ----------
-
 
 .. code-block:: python
 
@@ -67,9 +63,6 @@ Wrong way
    # all class in the file models will be proceded by odoo
    # so no **direct import** of a file that contain fake model
    from .models import ResPartner
-
-
-
 
 
    class FakeModel(SavepointCase):
@@ -91,9 +84,8 @@ Wrong way
            self.assertEqual(partner.name, "FOO-BAR")
            self.assertEqual(partner.test_char, "youhou")
 
-
-Right Way
-----------
+Right Way (up to v17)
+---------------------
 
 .. code-block:: python
 
@@ -124,8 +116,35 @@ Right Way
             self.assertEqual(partner.name, "FOO-BAR")
             self.assertEqual(partner.test_char, "youhou")
 
+Right Way (v18)
+---------------
+
+.. code-block:: python
+
+    from odoo.tests import TransactionCase
+
+    from odoo_test_helper import FakeModelLoader
 
 
+    class FakeModel(TransactionCase):
+        def setUp(self):
+            super().setUp()
+            self.loader = FakeModelLoader(self.env, self.__module__)
+            self.loader.backup_registry()
+
+            # The fake class is imported here !! After the backup_registry
+            from .models import ResPartner
+
+            self.loader.update_registry((ResPartner,))
+
+        def tearDown(self):
+            self.loader.restore_registry()
+            super().tearDown()
+
+        def test_create(self):
+            partner = self.env["res.partner"].create({"name": "BAR", "test_char": "youhou"})
+            self.assertEqual(partner.name, "FOO-BAR")
+            self.assertEqual(partner.test_char, "youhou")
 
 Contributor
 ~~~~~~~~~~~~
@@ -133,7 +152,6 @@ Contributor
 * Sébastien BEAU <sebastien.beau@akretion.com>
 * Laurent Mignon <laurent.mignon@acsone.eu>
 * Simone Orsi <simone.orsi@camptocamp.com>
-
 
 History
 ~~~~~~~~
