@@ -129,7 +129,7 @@ class FakeModelLoader(object):
             # remove module that have been added during the test
             del module_to_models[key]
 
-    def update_registry(self, odoo_models):
+    def _field_compute_all(self):
         # Since V13 field are computed at the end
         # In the setup of your test if you create or modify a record that
         # need to be recomputed we need to recompute them before reloading
@@ -142,6 +142,10 @@ class FakeModelLoader(object):
                 to_recompute_models.add(field.model_name)
             for model in to_recompute_models:
                 self.env[model].recompute()
+
+    def update_registry(self, odoo_models):
+        # Recompute before reloading the registry
+        self._field_compute_all()
 
         # In case that you are re-using fake model from an other module
         # Odoo have already modify the module_to_models variable
@@ -164,6 +168,9 @@ class FakeModelLoader(object):
             )
 
     def restore_registry(self):
+        # Recompute before reloading the registry
+        self._field_compute_all()
+
         for key in self._original_registry:
             ori = self._original_registry[key]
             model = self.env.registry[key]
