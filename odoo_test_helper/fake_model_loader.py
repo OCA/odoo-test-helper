@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2018 ACSONE (http://www.acsone.eu).
 # @author: Laurent Mignon <laurent.mignon@acsone.eu>
 # Copyright 2018 Camptocamp SA (http://www.camptocamp.com).
@@ -56,11 +55,7 @@ class FakeModelLoader(object):
             cls.loader.update_registry(
                 (MyFakeModelClass1, MyFakeModelClass2)
             )
-
-        @classmethod
-        def tearDownClass(cls):
-            cls.loader.restore_registry()
-            super().tearDownClass()
+            cls.addClassCleanup(cls.loader.restore_registry)
 
     Usage on TransactionCase / HttpCase:
 
@@ -74,10 +69,7 @@ class FakeModelLoader(object):
             self.loader.update_registry(
                 (MyFakeModelClass1, MyFakeModelClass2)
             )
-
-        def tearDown(self):
-            self.loader.restore_registry()
-            super().tearDown()
+            self.addCleanup(self.loader.restore_registry)
     """
 
     _original_registry = None
