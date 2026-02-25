@@ -68,16 +68,12 @@ Wrong way
    class FakeModel(SavepointCase):
        @classmethod
        def setUpClass(cls):
-           super(FakeModel, cls).setUpClass()
+           super().setUpClass()
            cls.loader = FakeModelLoader(cls.env, cls.__module__)
            cls.loader.backup_registry()
 
            cls.loader.update_registry((ResPartner,))
-
-       @classmethod
-       def tearDownClass(cls):
-           cls.loader.restore_registry()
-           super(FakeModel, cls).tearDownClass()
+           cls.addClassCleanup(cls.loader.restore_registry)
 
        def test_create(self):
            partner = self.env["res.partner"].create({"name": "BAR", "test_char": "youhou"})
@@ -97,7 +93,7 @@ Right Way (up to v17)
     class FakeModel(SavepointCase):
         @classmethod
         def setUpClass(cls):
-            super(FakeModel, cls).setUpClass()
+            super().setUpClass()
             cls.loader = FakeModelLoader(cls.env, cls.__module__)
             cls.loader.backup_registry()
 
@@ -105,11 +101,7 @@ Right Way (up to v17)
             from .models import ResPartner
 
             cls.loader.update_registry((ResPartner,))
-
-        @classmethod
-        def tearDownClass(cls):
-            cls.loader.restore_registry()
-            super(FakeModel, cls).tearDownClass()
+            cls.addClassCleanup(cls.loader.restore_registry)
 
         def test_create(self):
             partner = self.env["res.partner"].create({"name": "BAR", "test_char": "youhou"})
@@ -136,10 +128,7 @@ Right Way (v18)
             from .models import ResPartner
 
             self.loader.update_registry((ResPartner,))
-
-        def tearDown(self):
-            self.loader.restore_registry()
-            super().tearDown()
+            self.addCleanup(self.loader.restore_registry)
 
         def test_create(self):
             partner = self.env["res.partner"].create({"name": "BAR", "test_char": "youhou"})

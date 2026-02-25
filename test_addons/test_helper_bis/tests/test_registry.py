@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2020 Akretion (http://www.akretion.com).
 # @author: Sébastien BEAU <sebastien.beau@akretion.com>
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
@@ -19,11 +18,7 @@ class TestMixin(TransactionCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.loader = FakeModelLoader(cls.env, cls.__module__)
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.loader.restore_registry()
-        super().tearDownClass()
+        cls.addClassCleanup(cls.loader.restore_registry)
 
     def setUp(self):
         super().setUp()
